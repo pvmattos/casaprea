@@ -1,184 +1,273 @@
 import React from 'react';
-import { Compass, MapPin, Sun, Wind, ExternalLink } from 'lucide-react';
 import { PROPERTY_CONFIG } from '../config/property';
-
-const DESTINATION_PILLARS = [
-  {
-    icon: Wind,
-    title: 'Capital Mundial do Kitesurf',
-    description:
-      'A Praia do Preá é mundialmente reconhecida pelos ventos constantes e pelas condições ideais para o kitesurf e esportes náuticos diretamente em frente à propriedade.',
-  },
-  {
-    icon: Sun,
-    title: 'Pôr do Sol Inesquecível',
-    description:
-      'Ao final da tarde, o horizonte do Preá oferece um dos pores do sol mais celebrados do litoral cearense, contemplado com privacidade da piscina no rooftop.',
-  },
-  {
-    icon: Compass,
-    title: 'Dunas, Lagoas e Jericoacoara',
-    description:
-      'Ponto de partida privilegiado para passeios de buggy pelas dunas, visitas a lagoas cristalinas e à gastronomia e vida noturna da Vila de Jericoacoara.',
-  },
-] as const;
 
 export const DestinationSection: React.FC = () => {
   const { latitude, longitude } = PROPERTY_CONFIG.location.coordinates;
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+  const mapEmbedUrl = `https://www.google.com/maps?q=${latitude},${longitude}&z=15&output=embed`;
 
   return (
-    <section
-      id="experiencia"
-      aria-labelledby="destination-heading"
-      className="py-20 sm:py-28 lg:py-32 bg-[#132A38] text-[#F6F3EB]"
-    >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-        {/* Parte 1: A Experiência na Praia do Preá */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          <div className="lg:col-span-6 space-y-6">
-            <p className="text-xs uppercase tracking-[0.24em] text-[#D5B895] font-medium">
-              O Destino · Praia do Preá
+    <>
+      {/* 03 · Rooftop e piscina — Split Full-Bleed 8/4 em Azul Oceano Profundo */}
+      <section
+        id="experiencia"
+        aria-labelledby="rooftop-heading"
+        className="relative overflow-hidden bg-[#132A38] text-[#F6F3EB]"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-12">
+          <div
+            data-parallax-w
+            className="relative lg:col-span-8 min-h-[68svh] lg:min-h-[88svh] overflow-hidden"
+          >
+            <img
+              src="/images/rooftop-piscina-mar.jpg"
+              alt="Piscina privativa no rooftop da Casa na Areia Preá em frente ao mar e jangadas"
+              loading="lazy"
+              decoding="async"
+              data-parallax-img
+              className="h-[115%] w-full object-cover"
+            />
+          </div>
+
+          <div className="lg:col-span-4 flex flex-col justify-center px-6 py-16 md:px-12 lg:py-24">
+            <p
+              data-reveal="p"
+              className="text-xs uppercase tracking-[0.26em] text-[#D5B895]"
+            >
+              03 · Rooftop e piscina
             </p>
             <h2
-              id="destination-heading"
-              className="font-editorial text-3xl sm:text-5xl font-normal leading-[1.12] text-[#F6F3EB]"
+              id="rooftop-heading"
+              data-reveal="h"
+              className="mt-4 font-editorial text-4xl md:text-5xl font-normal leading-[0.96]"
             >
-              Vento constante, mar aberto e a essência do Ceará.
+              Água no alto, mar à frente.
             </h2>
-            <p className="text-base sm:text-lg text-[#EFE9DC]/85 font-light leading-relaxed">
-              Localizada no município de Cruz, Ceará, a Praia do Preá preserva o charme autêntico de
-              uma vila de pescadores aliado a uma cena internacional de hospitalidade, gastronomia e
-              esportes à vela.
+            <p
+              data-reveal="p"
+              className="mt-6 text-base leading-relaxed text-[#EFE9DC]/85 font-light"
+            >
+              No terraço superior, a piscina privativa se abre para o horizonte da Praia do Preá e
+              para o velejo constante das pipas de kitesurf.
             </p>
-            <p className="text-sm sm:text-base text-[#EFE9DC]/75 font-light leading-relaxed">
-              Na Casa na Areia Preá, você desperta com a brisa do Atlântico, observa as pipas de
-              kitesurf colorindo o céu a partir do terraço e aproveita o mar a poucos passos do
-              jardim.
+            <p
+              data-reveal="p"
+              className="mt-4 text-base leading-relaxed text-[#EFE9DC]/75 font-light"
+            >
+              Ao lado do deck com espreguiçadeiras, o espaço gourmet coberto reúne churrasqueira e
+              mesa de refeições para longos fins de tarde ao pôr do sol.
             </p>
+          </div>
+        </div>
+      </section>
 
-            <div className="pt-4 grid grid-cols-1 gap-6">
-              {DESTINATION_PILLARS.map((pillar) => {
-                const Icon = pillar.icon;
-                return (
-                  <div
-                    key={pillar.title}
-                    className="flex items-start gap-4 p-4 rounded-sm bg-white/5 border border-white/10"
-                  >
-                    <div className="p-2.5 rounded-xs bg-[#D5B895]/15 text-[#D5B895] shrink-0">
-                      <Icon className="w-5 h-5" aria-hidden="true" />
-                    </div>
-                    <div>
-                      <h3 className="font-editorial text-xl font-medium text-[#F6F3EB]">
-                        {pillar.title}
-                      </h3>
-                      <p className="mt-1 text-xs sm:text-sm text-[#EFE9DC]/75 font-light leading-relaxed">
-                        {pillar.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+      {/* 04 · Sala, cozinha e varanda — Fotografia Panorâmica + Trio 4/3 */}
+      <section
+        aria-labelledby="social-heading"
+        className="py-24 md:py-36 bg-[#F6F3EB] text-[#1C1917]"
+      >
+        <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
+            <div className="lg:col-span-6">
+              <p
+                data-reveal="p"
+                className="text-xs uppercase tracking-[0.26em] text-[#8C5A32] font-medium"
+              >
+                04 · Convivência
+              </p>
+              <h2
+                id="social-heading"
+                data-reveal="h"
+                className="mt-4 font-editorial text-[clamp(2.4rem,4.6vw,4.25rem)] font-normal leading-[0.96]"
+              >
+                Sala, cozinha e varanda
+              </h2>
             </div>
+            <p
+              data-reveal="p"
+              className="lg:col-span-5 lg:col-start-8 text-base md:text-lg leading-relaxed text-[#44403C] font-light"
+            >
+              Ambientes integrados em madeira natural e fibras cearenses que conectam a cozinha
+              equipada, a sala climatizada e a varanda aberta para o jardim e a praia.
+            </p>
           </div>
 
-          <div className="lg:col-span-6 space-y-6">
-            <figure className="overflow-hidden rounded-sm bg-[#1C3D52] aspect-[16/11]">
+          {/* Imagem Panorâmica 16/9 */}
+          <div
+            data-reveal="ctn"
+            className="mt-12 overflow-hidden rounded-xs bg-[#EFE9DC] aspect-[16/9]"
+          >
+            <img
+              src="/images/social-jantar-integrado.jpg"
+              alt="Sala de jantar com mesa em madeira maciça integrada à varanda e ao jardim central da Casa na Areia Preá"
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+          </div>
+
+          {/* Trio de Imagens 4/3 */}
+          <div className="mt-4 md:mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div
+              data-reveal="ctn"
+              className="overflow-hidden rounded-xs bg-[#EFE9DC] aspect-[4/3]"
+            >
               <img
-                src="/images/rooftop-gourmet-kitesurf.jpg"
-                alt="Vista do espaço gourmet no rooftop da Casa na Areia Preá com kitesurfistas velejando no mar ao fundo"
+                src="/images/social-sala-estar-1.jpg"
+                alt="Sala de estar ampla e climatizada com sofás claros e luminárias artesanais"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
-            </figure>
-            <div className="grid grid-cols-2 gap-6">
-              <figure className="overflow-hidden rounded-sm bg-[#1C3D52] aspect-[4/3]">
-                <img
-                  src="/images/jardim-frente-mar-jangadas.jpg"
-                  alt="Jangadas tradicionais na areia em frente à Casa na Areia Preá"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-              </figure>
-              <figure className="overflow-hidden rounded-sm bg-[#1C3D52] aspect-[4/3]">
-                <img
-                  src="/images/rooftop-zenital-arquitetura.jpg"
-                  alt="Vista aérea zenital da Casa na Areia Preá integrada à areia da praia"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover"
-                />
-              </figure>
+            </div>
+            <div
+              data-reveal="ctn"
+              className="overflow-hidden rounded-xs bg-[#EFE9DC] aspect-[4/3]"
+            >
+              <img
+                src="/images/social-cozinha-bancada.jpg"
+                alt="Cozinha completa com bancada em madeira integrada à área de refeições"
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div
+              data-reveal="ctn"
+              className="overflow-hidden rounded-xs bg-[#EFE9DC] aspect-[4/3]"
+            >
+              <img
+                src="/images/rooftop-gourmet-kitesurf.jpg"
+                alt="Espaço gourmet no rooftop com churrasqueira e vista para os kitesurfistas no mar"
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Parte 2: Localização Privilegiada (#localizacao) */}
+      {/* 05 · Ao entardecer — Full-Bleed Noturno com Parallax */}
+      <section
+        aria-labelledby="twilight-heading"
+        data-parallax-w
+        className="relative h-[82svh] md:h-[92svh] w-full overflow-hidden bg-[#0A161E] text-[#F6F3EB]"
+      >
+        <img
+          src="/images/exterior-noturna-aerea.jpg"
+          alt="Vista noturna da Casa na Areia Preá iluminada em frente ao mar"
+          loading="lazy"
+          decoding="async"
+          data-parallax-img
+          className="h-[116%] w-full object-cover object-center"
+        />
         <div
-          id="localizacao"
-          className="mt-20 sm:mt-28 pt-14 border-t border-white/15 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center"
-        >
-          <div className="lg:col-span-7">
-            <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[#D5B895] font-medium mb-3">
-              <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
-              <span>Localização Privilegiada</span>
+          className="absolute inset-0 bg-gradient-to-t from-[#050D13]/85 via-[#050D13]/25 to-black/30"
+          aria-hidden="true"
+        />
+        <div className="relative z-10 mx-auto flex h-full max-w-[1400px] items-end px-6 pb-14 md:px-10 md:pb-20">
+          <div className="max-w-xl">
+            <p className="text-xs uppercase tracking-[0.26em] text-[#D5B895]">
+              05 · Ao entardecer
             </p>
-            <h3 className="font-editorial text-2xl sm:text-4xl font-normal text-[#F6F3EB]">
-              {PROPERTY_CONFIG.location.fullLabel}
-            </h3>
-            <p className="mt-3 text-sm sm:text-base text-[#EFE9DC]/80 font-light max-w-2xl leading-relaxed">
-              Posicionada diretamente na orla da Praia do Preá, oferecendo tranquilidade à beira-mar
-              e fácil acesso às experiências gastronômicas e naturais da região.
+            <h2
+              id="twilight-heading"
+              className="mt-3 font-editorial text-4xl md:text-6xl font-normal leading-[0.95]"
+            >
+              Quando a luz muda
+            </h2>
+            <p className="mt-4 text-base md:text-lg text-[#EFE9DC]/85 font-light">
+              Ao cair da tarde, a iluminação quente desenha os pergolados de madeira, as palmeiras
+              do pátio interno e a piscina no terraço sob o som das ondas.
             </p>
-
-            <ul className="mt-6 space-y-3">
-              {PROPERTY_CONFIG.location.highlights.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-center gap-3 text-sm text-[#EFE9DC]/90 font-light"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D5B895]" aria-hidden="true" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
           </div>
+        </div>
+      </section>
 
-          <div className="lg:col-span-5">
-            <div className="p-6 sm:p-8 rounded-sm bg-[#183446] border border-white/15 space-y-5">
-              <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-[0.2em] text-[#D5B895]">
-                  Coordenadas Verificadas
-                </span>
-                <span className="text-xs font-mono text-[#EFE9DC]/75">
-                  {latitude.toFixed(4)}°, {longitude.toFixed(4)}°
-                </span>
-              </div>
-
-              <div className="py-4 border-y border-white/10 space-y-1.5">
-                <p className="font-editorial text-xl text-[#F6F3EB]">
-                  Frente à Praia do Preá
-                </p>
-                <p className="text-xs text-[#EFE9DC]/75">
-                  Município de Cruz · Litoral Oeste do Ceará · Brasil
-                </p>
-              </div>
-
-              <a
-                href={googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#F6F3EB] text-[#132A38] text-xs uppercase tracking-[0.14em] font-medium rounded-sm hover:bg-white transition-colors"
+      {/* 06 · Praia e arredores (#localizacao) — Texto Enxuto + Mapa Interativo */}
+      <section
+        id="localizacao"
+        aria-labelledby="location-heading"
+        className="py-24 md:py-36 bg-[#F6F3EB] text-[#1C1917]"
+      >
+        <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            <div className="lg:col-span-5">
+              <p
+                data-reveal="p"
+                className="text-xs uppercase tracking-[0.26em] text-[#8C5A32] font-medium"
               >
-                <span>Ver localização no Google Maps</span>
-                <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
-              </a>
+                06 · Praia e arredores
+              </p>
+              <h2
+                id="location-heading"
+                data-reveal="h"
+                className="mt-4 font-editorial text-[clamp(2.4rem,4.6vw,4.25rem)] font-normal leading-[0.96]"
+              >
+                Praia do Preá, Ceará
+              </h2>
+              <p
+                data-reveal="p"
+                className="mt-6 text-base md:text-lg leading-relaxed text-[#44403C] font-light"
+              >
+                Situada no município de Cruz, a Praia do Preá é referência mundial para o kitesurf e
+                ponto de partida privilegiado para explorar a Vila de Jericoacoara, dunas e lagoas
+                do litoral oeste cearense.
+              </p>
+
+              {/* Indicadores tipográficos limpos */}
+              <div className="mt-10 grid grid-cols-3 gap-6 border-t border-[#1C1917]/15 pt-8">
+                <div>
+                  <p className="font-editorial text-2xl md:text-3xl text-[#132A38]">Frente mar</p>
+                  <p className="mt-1 text-xs uppercase tracking-[0.18em] text-[#57534E]">
+                    Pé na areia
+                  </p>
+                </div>
+                <div>
+                  <p className="font-editorial text-2xl md:text-3xl text-[#132A38]">Kitesurf</p>
+                  <p className="mt-1 text-xs uppercase tracking-[0.18em] text-[#57534E]">
+                    Vento constante
+                  </p>
+                </div>
+                <div>
+                  <p className="font-editorial text-2xl md:text-3xl text-[#132A38]">Cruz · CE</p>
+                  <p className="mt-1 text-xs uppercase tracking-[0.18em] text-[#57534E]">
+                    Vizinha a Jeri
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link-u inline-flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-[#1C1917]"
+                >
+                  <span>Abrir no Google Maps</span>
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </div>
+
+            <div className="lg:col-span-7">
+              <div
+                data-reveal="ctn"
+                className="overflow-hidden rounded-xs border border-[#1C1917]/12 bg-[#EFE9DC] aspect-[4/3]"
+              >
+                <iframe
+                  title="Mapa de localização — Praia do Preá, Cruz, Ceará"
+                  src={mapEmbedUrl}
+                  className="h-full w-full border-0 grayscale-[20%] contrast-[1.02]"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };

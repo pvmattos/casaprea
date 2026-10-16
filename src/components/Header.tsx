@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, X, Calendar } from 'lucide-react';
 import { PROPERTY_CONFIG } from '../config/property';
 
 const NAV_ITEMS = [
   { label: 'A casa', href: '#a-casa' },
-  { label: 'Suítes', href: '#suites' },
   { label: 'Galeria', href: '#galeria' },
+  { label: 'Suítes', href: '#suites' },
   { label: 'Experiência', href: '#experiencia' },
   { label: 'Localização', href: '#localizacao' },
+  { label: 'Dúvidas', href: '#faq' },
 ] as const;
 
 export const Header: React.FC = () => {
@@ -16,7 +16,7 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
+      setIsScrolled(window.scrollY > 80);
     };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -38,114 +38,118 @@ export const Header: React.FC = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
         solidHeader
-          ? 'bg-[#F6F3EB]/95 backdrop-blur-md border-b border-[#DFD6C3] py-3.5 text-[#1C1917] shadow-xs'
-          : 'bg-gradient-to-b from-black/75 via-black/40 to-transparent py-4 sm:py-5 text-[#F6F3EB]'
+          ? 'bg-[#F6F3EB]/92 backdrop-blur-md border-b border-[#1C1917]/10 py-3.5 text-[#1C1917]'
+          : 'bg-gradient-to-b from-black/70 via-black/30 to-transparent py-5 text-[#F6F3EB]'
       }`}
     >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 flex items-center justify-between">
-        {/* Marca tipográfica */}
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10 flex items-center justify-between">
+        {/* Marca tipográfica editorial */}
         <a
           href="#"
-          className="group flex flex-col focus:outline-none"
+          className="font-editorial text-2xl md:text-[1.65rem] tracking-tight leading-none"
           aria-label={`${PROPERTY_CONFIG.name} — Ir para o início`}
         >
-          <span className="font-editorial text-2xl sm:text-[1.7rem] font-medium tracking-wide leading-none">
-            Casa na Areia
-          </span>
-          <span
-            className={`text-[0.65rem] uppercase tracking-[0.28em] mt-1 transition-colors ${
-              solidHeader ? 'text-[#8C5A32]' : 'text-[#EFE9DC]/85'
-            }`}
-          >
-            Praia do Preá · Ceará
-          </span>
+          Casa na Areia <span className="italic font-normal opacity-85">Preá</span>
         </a>
 
-        {/* Navegação Desktop */}
-        <nav aria-label="Navegação principal" className="hidden lg:flex items-center gap-8">
+        {/* Navegação Desktop com efeito roll sofisticado */}
+        <nav aria-label="Navegação principal" className="hidden lg:flex items-center gap-9 text-sm">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className={`text-sm font-normal tracking-wide transition-colors ${
-                solidHeader
-                  ? 'text-[#1C1917]/80 hover:text-[#8C5A32]'
-                  : 'text-[#F6F3EB]/90 hover:text-white'
+              className={`roll transition-opacity ${
+                solidHeader ? 'text-[#1C1917]/80 hover:text-[#1C1917]' : 'text-[#F6F3EB]/90 hover:text-white'
               }`}
             >
-              {item.label}
+              <span className="roll-in" data-t={item.label}>
+                {item.label}
+              </span>
             </a>
           ))}
         </nav>
 
-        {/* CTA Principal Desktop */}
-        <div className="hidden lg:flex items-center">
+        {/* CTA Desktop + Controles Mobile */}
+        <div className="flex items-center gap-3">
           <a
             href="#disponibilidade"
-            className={`inline-flex items-center gap-2 px-5 py-2.5 text-xs uppercase tracking-[0.14em] font-medium transition-all duration-200 rounded-sm ${
+            data-magnetic
+            className={`hidden md:inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs uppercase tracking-[0.16em] font-medium transition-colors duration-300 ${
               solidHeader
-                ? 'bg-[#132A38] text-[#F6F3EB] hover:bg-[#1C3D52]'
-                : 'bg-[#F6F3EB] text-[#132A38] hover:bg-white'
+                ? 'bg-[#132A38] text-[#F6F3EB] hover:bg-[#8C5A32]'
+                : 'bg-[#F6F3EB] text-[#132A38] hover:bg-[#D5B895] hover:text-[#132A38]'
             }`}
           >
-            <Calendar className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Consultar disponibilidade</span>
           </a>
-        </div>
 
-        {/* Botão Menu Mobile */}
-        <button
-          type="button"
-          onClick={() => setMobileMenuOpen((prev) => !prev)}
-          aria-expanded={mobileMenuOpen}
-          aria-controls="mobile-navigation-menu"
-          aria-label={mobileMenuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
-          className={`lg:hidden p-2.5 rounded-sm transition-colors ${
-            solidHeader
-              ? 'text-[#1C1917] hover:bg-[#EFE9DC]'
-              : 'text-[#F6F3EB] hover:bg-white/10'
-          }`}
-        >
-          {mobileMenuOpen ? (
-            <X className="w-6 h-6" aria-hidden="true" />
-          ) : (
-            <Menu className="w-6 h-6" aria-hidden="true" />
-          )}
-        </button>
+          <a
+            href="#disponibilidade"
+            className={`md:hidden inline-flex items-center rounded-full px-3.5 py-1.5 text-[11px] uppercase tracking-[0.16em] font-medium transition-colors ${
+              solidHeader
+                ? 'bg-[#132A38] text-[#F6F3EB]'
+                : 'bg-[#F6F3EB]/95 text-[#132A38]'
+            }`}
+          >
+            Reservar
+          </a>
+
+          {/* Botão Menu Mobile minimalista com 2 linhas que viram X */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation-menu"
+            aria-label={mobileMenuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
+            className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-full cursor-pointer"
+          >
+            <span className="relative block h-3.5 w-5">
+              <span
+                className={`absolute left-0 h-[1.5px] w-full bg-current transition-all duration-300 ${
+                  mobileMenuOpen ? 'top-1.5 rotate-45' : 'top-0'
+                }`}
+              />
+              <span
+                className={`absolute left-0 h-[1.5px] w-full bg-current transition-all duration-300 ${
+                  mobileMenuOpen ? 'top-1.5 -rotate-45' : 'bottom-0'
+                }`}
+              />
+            </span>
+          </button>
+        </div>
       </div>
 
-      {/* Menu Mobile */}
+      {/* Menu Mobile Fullscreen Editorial */}
       {mobileMenuOpen && (
         <nav
           id="mobile-navigation-menu"
           aria-label="Menu móvel"
-          className="lg:hidden bg-[#F6F3EB] border-b border-[#DFD6C3] px-5 pt-4 pb-6 text-[#1C1917]"
+          className="lg:hidden bg-[#F6F3EB] border-b border-[#1C1917]/10 px-6 pt-8 pb-10 text-[#1C1917]"
         >
-          <ul className="flex flex-col space-y-3">
+          <div className="flex flex-col gap-4 font-editorial text-3xl">
             {NAV_ITEMS.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block py-2 text-base font-medium text-[#1C1917] hover:text-[#8C5A32] border-b border-[#EFE9DC]"
-                >
-                  {item.label}
-                </a>
-              </li>
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-1.5 border-b border-[#1C1917]/10 hover:text-[#8C5A32] transition-colors"
+              >
+                {item.label}
+              </a>
             ))}
-          </ul>
-          <div className="mt-5">
             <a
               href="#disponibilidade"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#132A38] text-[#F6F3EB] text-xs uppercase tracking-[0.14em] font-medium rounded-sm hover:bg-[#1C3D52] transition-colors"
+              className="mt-4 inline-flex items-center justify-center rounded-full bg-[#132A38] px-6 py-3.5 font-sans text-xs uppercase tracking-[0.18em] font-medium text-[#F6F3EB]"
             >
-              <Calendar className="w-4 h-4" aria-hidden="true" />
-              <span>Consultar disponibilidade</span>
+              Consultar disponibilidade
             </a>
           </div>
+          <p className="mt-8 text-xs uppercase tracking-[0.22em] text-[#57534E]">
+            Praia do Preá · Cruz · Ceará · Brasil
+          </p>
         </nav>
       )}
     </header>

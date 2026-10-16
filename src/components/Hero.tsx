@@ -1,104 +1,79 @@
 import React from 'react';
-import { ArrowDown, Calendar, Users, BedDouble, Waves } from 'lucide-react';
 
 export const Hero: React.FC = () => {
   return (
     <section
       aria-label="Apresentação principal"
-      className="relative min-h-[92vh] lg:min-h-screen w-full flex items-end overflow-hidden bg-[#0A161E]"
+      className="relative min-h-[100svh] w-full overflow-hidden bg-[#0A161E] text-[#F6F3EB]"
     >
-      {/* Fotografia real principal em grande formato */}
-      <div className="absolute inset-0 z-0">
+      {/* Fotografia real principal com movimento Ken Burns suave */}
+      <div className="absolute inset-0 overflow-hidden">
         <img
           src="/images/exterior-fachada-crepusculo.jpg"
           alt="Fachada da Casa na Areia Preá iluminada ao entardecer, pé na areia em frente à Praia do Preá"
           fetchPriority="high"
           decoding="async"
-          className="w-full h-full object-cover object-center scale-[1.01] transition-transform duration-1000"
+          className="kenburns h-full w-full object-cover object-center"
         />
-        {/* Gradiente editorial com contraste aprimorado para garantir leitura nítida e confortável */}
         <div
-          className="absolute inset-0 bg-gradient-to-t from-[#050D13]/95 via-[#050D13]/70 to-black/40"
+          className="absolute inset-0 bg-gradient-to-t from-[#050D13]/90 via-[#050D13]/35 to-black/45"
           aria-hidden="true"
         />
       </div>
 
-      {/* Conteúdo Editorial do Hero — Foco na casa, tipografia limpa e alta legibilidade */}
-      <div className="relative z-10 mx-auto max-w-7xl w-full px-5 sm:px-8 lg:px-12 pt-32 pb-12 sm:pb-18 lg:pb-22">
-        <div className="max-w-3xl">
-          {/* Identificação de destaque da casa */}
-          <p className="inline-flex items-center gap-2 text-xs sm:text-sm uppercase tracking-[0.28em] text-[#E5C9A8] font-semibold mb-3 drop-shadow-sm">
-            <span className="w-5 h-[2px] bg-[#D5B895]" aria-hidden="true" />
-            <span>Casa na Areia Preá</span>
-          </p>
+      {/* Assinatura lateral vertical estilo editorial */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-6 top-1/2 z-10 hidden -translate-y-1/2 xl:flex flex-col items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-[#F6F3EB]/65"
+      >
+        <span className="h-14 w-px bg-[#F6F3EB]/30" />
+        <span className="writing-vertical">Praia do Preá · Ceará · Brasil</span>
+        <span className="h-14 w-px bg-[#F6F3EB]/30" />
+      </div>
 
-          {/* Título de alto impacto visual e legibilidade perfeita */}
-          <h1 className="font-editorial text-3xl sm:text-5xl lg:text-[4rem] text-[#F6F3EB] font-normal leading-[1.1] tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]">
-            Seu refúgio exclusivo em frente ao mar.
-          </h1>
+      {/* Conteúdo enxuto na base do Hero — Foco total na fotografia da casa */}
+      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-end px-6 pb-10 pt-28 md:px-10 md:pb-14">
+        <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
+          <div className="lg:col-span-9">
+            <p className="hero-anim-1 mb-3 inline-flex items-center gap-3 text-xs uppercase tracking-[0.28em] text-[#E5C9A8] font-medium drop-shadow-xs">
+              <span className="h-px w-8 bg-[#D5B895]" aria-hidden="true" />
+              <span>Casa na Areia Preá</span>
+            </p>
 
-          {/* Subtítulo elegante com a localização solicitada */}
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-[#F6F3EB]/90 font-light leading-snug drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)]">
-            Na melhor localização da Praia do Preá · Cruz, Ceará
-          </p>
+            <h1 className="hero-anim-2 font-editorial text-[clamp(2.4rem,5.6vw,5.25rem)] font-normal leading-[0.98] tracking-tight text-[#F6F3EB] drop-shadow-[0_2px_16px_rgba(0,0,0,0.65)]">
+              Seu refúgio exclusivo em frente ao mar.
+            </h1>
 
-          {/* Indicadores objetivos em cards translúcidos de alto contraste */}
-          <dl
-            aria-label="Indicadores da propriedade"
-            className="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl"
-          >
-            <div className="flex items-center gap-3 p-3 rounded-xs bg-black/45 backdrop-blur-md border border-white/15 shadow-sm">
-              <div className="p-2 rounded-xs bg-[#D5B895]/20 text-[#E5C9A8] shrink-0">
-                <BedDouble className="w-4 h-4" aria-hidden="true" />
-              </div>
-              <div>
-                <dt className="sr-only">Dormitórios</dt>
-                <dd className="text-sm font-medium text-[#F6F3EB]">6 suítes</dd>
-                <span className="block text-xs text-[#EFE9DC]/75">Climatizadas</span>
-              </div>
-            </div>
+            <p className="hero-anim-3 mt-4 text-base sm:text-lg text-[#F6F3EB]/90 font-light tracking-wide drop-shadow-[0_1px_8px_rgba(0,0,0,0.75)]">
+              Na melhor localização da Praia do Preá · Cruz, Ceará
+            </p>
+          </div>
 
-            <div className="flex items-center gap-3 p-3 rounded-xs bg-black/45 backdrop-blur-md border border-white/15 shadow-sm">
-              <div className="p-2 rounded-xs bg-[#D5B895]/20 text-[#E5C9A8] shrink-0">
-                <Users className="w-4 h-4" aria-hidden="true" />
-              </div>
-              <div>
-                <dt className="sr-only">Capacidade</dt>
-                <dd className="text-sm font-medium text-[#F6F3EB]">Até 14 hóspedes</dd>
-                <span className="block text-xs text-[#EFE9DC]/75">Famílias & grupos</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-xs bg-black/45 backdrop-blur-md border border-white/15 shadow-sm">
-              <div className="p-2 rounded-xs bg-[#D5B895]/20 text-[#E5C9A8] shrink-0">
-                <Waves className="w-4 h-4" aria-hidden="true" />
-              </div>
-              <div>
-                <dt className="sr-only">Lazer exclusivo</dt>
-                <dd className="text-sm font-medium text-[#F6F3EB]">Piscina no rooftop</dd>
-                <span className="block text-xs text-[#EFE9DC]/75">Privativa com vista mar</span>
-              </div>
-            </div>
-          </dl>
-
-          {/* Botões de Ação com alto contraste */}
-          <div className="mt-7 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+          <div className="hero-anim-3 lg:col-span-3 flex flex-col items-start lg:items-end justify-end gap-4">
+            <p className="text-[11px] uppercase tracking-[0.22em] text-[#EFE9DC]/85 lg:text-right leading-relaxed">
+              14 hóspedes · 6 suítes · piscina no rooftop · pé na areia
+            </p>
             <a
               href="#disponibilidade"
-              className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 sm:py-4 bg-[#F6F3EB] text-[#132A38] text-xs sm:text-sm uppercase tracking-[0.14em] font-medium rounded-sm hover:bg-white shadow-md transition-all active:scale-[0.99]"
+              data-magnetic
+              className="inline-flex items-center gap-3 rounded-full border border-[#F6F3EB]/80 bg-[#F6F3EB] px-7 py-3.5 text-xs uppercase tracking-[0.2em] font-medium text-[#132A38] transition-all duration-300 hover:bg-[#D5B895] hover:border-[#D5B895]"
             >
-              <Calendar className="w-4 h-4" aria-hidden="true" />
               <span>Consultar disponibilidade</span>
-            </a>
-
-            <a
-              href="#a-casa"
-              className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 sm:py-4 backdrop-blur-sm bg-black/35 border border-[#F6F3EB]/40 text-[#F6F3EB] text-xs sm:text-sm uppercase tracking-[0.14em] font-medium rounded-sm hover:bg-white/15 transition-all"
-            >
-              <span>Conhecer a casa</span>
-              <ArrowDown className="w-4 h-4" aria-hidden="true" />
+              <span aria-hidden="true">→</span>
             </a>
           </div>
+        </div>
+
+        {/* Rodapé do Hero com linha expansível "Conhecer a casa" */}
+        <div className="mt-10 flex items-center justify-between border-t border-white/15 pt-5 text-[11px] uppercase tracking-[0.24em] text-[#F6F3EB]/75">
+          <a
+            href="#a-casa"
+            className="group inline-flex items-center gap-3 hover:text-white transition-colors"
+          >
+            <span>Conhecer a casa</span>
+            <span className="inline-block h-px w-10 bg-[#F6F3EB]/60 transition-all duration-300 group-hover:w-16 group-hover:bg-white" />
+          </a>
+          <span className="hidden sm:inline">02° 48&apos; S · 40° 24&apos; W</span>
         </div>
       </div>
     </section>

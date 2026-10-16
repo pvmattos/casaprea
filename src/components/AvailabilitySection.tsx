@@ -7,7 +7,6 @@ import {
   ChevronRight,
   Clock,
   ExternalLink,
-  Info,
   Loader2,
   MessageCircle,
   Minus,
@@ -163,7 +162,6 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
   const hasReliableData = Boolean(apiData?.hasReliableData && !fetchError);
   const isStale = Boolean(apiData?.isStale);
 
-  // Caso novas datas indisponíveis cheguem e conflitem com a seleção atual, limpa o conflito
   useEffect(() => {
     if (checkIn && checkOut && doesStayOverlapUnavailable(checkIn, checkOut, unavailableRanges)) {
       setCheckOut('');
@@ -202,7 +200,6 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
     setViewMonth(next.getUTCMonth());
   };
 
-  // Primeira noite ocupada após o check-in (pode ser usada apenas como checkout exclusivo)
   const firstBlockedNightAfterCheckIn = useMemo(() => {
     if (!checkIn || checkOut) return null;
     return getFirstBlockedNightAfterCheckIn(checkIn, unavailableRanges);
@@ -211,7 +208,6 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
   const handleDayClick = (isoDate: string) => {
     setSelectionError(null);
 
-    // 1. Se ainda não há check-in, ou se já há check-in e checkout definidos, iniciamos nova seleção de check-in
     if (!checkIn || (checkIn && checkOut)) {
       if (!isDateAvailableForCheckIn(isoDate, unavailableRanges, todayIso)) {
         setSelectionError(
@@ -224,15 +220,12 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
       return;
     }
 
-    // 2. Já existe check-in, e o visitante clicou na mesma data: limpa seleção
     if (isoDate === checkIn) {
       setCheckIn('');
       setCheckOut('');
       return;
     }
 
-    // 3. Se o visitante clicou numa data anterior ao check-in atual:
-    // se ela for válida para check-in, atualiza o check-in para essa data
     if (isoDate < checkIn) {
       if (isDateAvailableForCheckIn(isoDate, unavailableRanges, todayIso)) {
         setCheckIn(isoDate);
@@ -243,14 +236,11 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
       return;
     }
 
-    // 4. O visitante clicou em uma data posterior ao check-in -> tenta definir como checkout
     if (isDateAvailableForCheckOut(checkIn, isoDate, unavailableRanges)) {
       setCheckOut(isoDate);
       return;
     }
 
-    // Se o intervalo tem noites ocupadas no meio, mas a data clicada em si está livre para um novo check-in,
-    // informa o visitante do bloqueio intermediário.
     setSelectionError(
       'Não é possível selecionar este período pois existem noites reservadas no intervalo.'
     );
@@ -321,14 +311,18 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
         {WEEKDAYS_PT.map((dayName) => (
           <div
             key={dayName}
-            className="text-[0.7rem] uppercase tracking-wider text-[#57534E] font-medium py-1"
+            className="text-[0.68rem] uppercase tracking-wider text-[#57534E] font-medium py-1"
           >
             {dayName}
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-1" role="grid" aria-label={`${MONTH_NAMES_PT[grid.month]} ${grid.year}`}>
+      <div
+        className="grid grid-cols-7 gap-1"
+        role="grid"
+        aria-label={`${MONTH_NAMES_PT[grid.month]} ${grid.year}`}
+      >
         {grid.days.map((cell, idx) => {
           if (!cell) {
             return <div key={`empty-${idx}`} className="h-10 sm:h-11" aria-hidden="true" />;
@@ -343,13 +337,9 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
           const isInSelectedRange =
             Boolean(checkIn && checkOut && isoDate > checkIn && isoDate < checkOut);
 
-          // Semântica de checkout exclusivo:
-          // Quando o visitante já escolheu checkIn e está escolhendo checkOut,
-          // a primeira data ocupada após o checkIn (firstBlockedNightAfterCheckIn) PODE ser escolhida como checkout!
           const isCheckoutOnlyCandidate =
             Boolean(checkIn && !checkOut && firstBlockedNightAfterCheckIn === isoDate);
 
-          // Se já escolheu checkIn (e ainda não escolheu checkOut), datas após firstBlockedNightAfterCheckIn ficam bloqueadas
           const isBlockedByIntermediateReservation = Boolean(
             checkIn &&
               !checkOut &&
@@ -362,10 +352,8 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
             (occupiedNight && !isCheckoutOnlyCandidate && !isSelectedCheckOut) ||
             isBlockedByIntermediateReservation;
 
-          // Verifica se esta data é um dia de checkout de uma reserva anterior (livre para novo check-in à tarde)
           const isPreviousCheckoutDay =
-            !occupiedNight &&
-            unavailableRanges.some((r) => r.endDate === isoDate);
+            !occupiedNight && unavailableRanges.some((r) => r.endDate === isoDate);
 
           let buttonClasses =
             'relative h-10 sm:h-11 w-full rounded-xs text-xs sm:text-sm font-medium transition-all flex flex-col items-center justify-center ';
@@ -385,7 +373,6 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
             buttonClasses +=
               'bg-[#EFE9DC] text-[#8C5A32] border border-dashed border-[#8C5A32] hover:bg-[#132A38] hover:text-[#F6F3EB] cursor-pointer';
           } else if (!hasReliableData || isStale) {
-            // Quando não há sincronização confiável, não marcamos como "disponível confirmado"
             buttonClasses +=
               'bg-[#FAF8F5] text-[#1C1917] border border-[#E5DEC9] hover:border-[#8C5A32] cursor-pointer';
           } else {
@@ -452,35 +439,17 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
     <section
       id="disponibilidade"
       aria-labelledby="availability-heading"
-      className="py-20 sm:py-28 lg:py-32 bg-[#F6F3EB] text-[#1C1917] border-t border-[#DFD6C3]"
+      className="py-24 md:py-36 bg-[#132A38] text-[#F6F3EB]"
     >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
-        {/* Cabeçalho da Seção */}
-        <div className="max-w-3xl mb-12 sm:mb-16">
-          <p className="text-xs uppercase tracking-[0.22em] text-[#8C5A32] font-semibold mb-3">
-            Disponibilidade & Reserva
-          </p>
-          <h2
-            id="availability-heading"
-            className="font-editorial text-3xl sm:text-5xl font-normal leading-[1.12] text-[#1C1917]"
-          >
-            Planeje seus dias em frente ao mar do Preá.
-          </h2>
-          <p className="mt-4 text-sm sm:text-base text-[#57534E] font-light leading-relaxed">
-            Selecione as datas de entrada e saída e a quantidade de hóspedes para consultar a
-            disponibilidade sincronizada com o calendário do Airbnb e iniciar seu atendimento pelos
-            canais oficiais.
-          </p>
-        </div>
-
-        {/* Avisos de Estado de Sincronização (Carregamento / Erro / Não Configurado / Desatualizado) */}
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10">
+        {/* Avisos de Estado de Sincronização */}
         {loading && (
           <div
             role="status"
             data-testid="calendar-loading"
-            className="mb-8 p-4 rounded-sm bg-[#EFE9DC] border border-[#DFD6C3] flex items-center gap-3 text-sm text-[#44403C]"
+            className="mb-8 p-4 rounded-xs bg-white/10 border border-white/15 flex items-center gap-3 text-sm text-[#F6F3EB]"
           >
-            <Loader2 className="w-4 h-4 animate-spin text-[#132A38]" aria-hidden="true" />
+            <Loader2 className="w-4 h-4 animate-spin text-[#D5B895]" aria-hidden="true" />
             <span>Consultando calendário sincronizado de disponibilidade...</span>
           </div>
         )}
@@ -489,7 +458,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
           <div
             role="alert"
             data-testid="calendar-unconfirmed-banner"
-            className="mb-8 p-5 rounded-sm bg-[#EFE9DC] border-l-4 border-[#8C5A32] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+            className="mb-8 p-5 rounded-xs bg-[#F6F3EB] text-[#1C1917] border-l-4 border-[#8C5A32] flex flex-col sm:flex-row sm:items-center justify-between gap-4"
           >
             <div className="flex items-start gap-3.5">
               <AlertTriangle
@@ -516,7 +485,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
               <button
                 type="button"
                 onClick={loadAvailability}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider font-medium bg-[#F6F3EB] border border-[#DFD6C3] text-[#1C1917] rounded-xs hover:bg-white transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider font-medium bg-[#EFE9DC] border border-[#DFD6C3] text-[#1C1917] rounded-xs hover:bg-white transition-colors cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Tentar novamente</span>
@@ -534,17 +503,194 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-          {/* Coluna Esquerda: Calendário Visual Interativo (7 colunas) */}
-          <div className="lg:col-span-7 bg-[#EFE9DC]/65 border border-[#DFD6C3] rounded-sm p-5 sm:p-8">
-            {/* Barra de Navegação de Meses */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          {/* Coluna Esquerda (4 colunas): Título Editorial + Resumo e Ações */}
+          <div className="lg:col-span-4 space-y-6">
+            <div>
+              <p
+                data-reveal="p"
+                className="text-xs uppercase tracking-[0.26em] text-[#D5B895] font-medium"
+              >
+                10 · Reserva
+              </p>
+              <h2
+                id="availability-heading"
+                data-reveal="h"
+                className="mt-3 font-editorial text-[clamp(2.4rem,4.5vw,4rem)] font-normal leading-[0.96] text-[#F6F3EB]"
+              >
+                Disponibilidade
+              </h2>
+              <p
+                data-reveal="p"
+                className="mt-4 text-sm sm:text-base text-[#EFE9DC]/80 font-light leading-relaxed"
+              >
+                Escolha as datas de check-in e checkout no calendário sincronizado com o Airbnb.
+              </p>
+            </div>
+
+            {/* Painel de Seleção e Conversão */}
+            <div className="bg-[#F6F3EB] text-[#1C1917] rounded-xs p-6 space-y-5 shadow-xl">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3 bg-[#EFE9DC]/70 border border-[#DFD6C3] rounded-xs">
+                  <span className="block text-[0.65rem] uppercase tracking-[0.16em] text-[#57534E]">
+                    Check-in
+                  </span>
+                  <span
+                    data-testid="selected-checkin"
+                    className="mt-1 block text-sm font-medium text-[#1C1917]"
+                  >
+                    {checkIn ? formatDisplayDatePtBr(checkIn, 'short') : 'Selecione'}
+                  </span>
+                </div>
+
+                <div className="p-3 bg-[#EFE9DC]/70 border border-[#DFD6C3] rounded-xs">
+                  <span className="block text-[0.65rem] uppercase tracking-[0.16em] text-[#57534E]">
+                    Checkout
+                  </span>
+                  <span
+                    data-testid="selected-checkout"
+                    className="mt-1 block text-sm font-medium text-[#1C1917]"
+                  >
+                    {checkOut ? formatDisplayDatePtBr(checkOut, 'short') : 'Selecione'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Seletor de Hóspedes */}
+              <div className="p-3.5 bg-[#EFE9DC]/70 border border-[#DFD6C3] rounded-xs flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <Users className="w-4 h-4 text-[#8C5A32]" aria-hidden="true" />
+                  <div>
+                    <label
+                      htmlFor="guests-input"
+                      className="block text-xs uppercase tracking-wider text-[#57534E]"
+                    >
+                      Hóspedes
+                    </label>
+                    <span className="text-[11px] text-[#57534E]">Máx. {MAX_GUESTS} pessoas</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handleGuestChange(guests - 1)}
+                    disabled={guests <= MIN_GUESTS}
+                    aria-label="Diminuir quantidade de hóspedes"
+                    className="w-8 h-8 rounded-xs border border-[#DFD6C3] bg-white text-[#1C1917] flex items-center justify-center disabled:opacity-35 disabled:cursor-not-allowed hover:bg-[#EFE9DC] cursor-pointer"
+                  >
+                    <Minus className="w-3.5 h-3.5" aria-hidden="true" />
+                  </button>
+
+                  <input
+                    id="guests-input"
+                    type="number"
+                    min={MIN_GUESTS}
+                    max={MAX_GUESTS}
+                    value={guests}
+                    onChange={(e) => handleGuestChange(Number(e.target.value))}
+                    aria-label="Quantidade de hóspedes"
+                    className="w-10 text-center text-sm font-semibold text-[#1C1917] bg-transparent focus:outline-none"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => handleGuestChange(guests + 1)}
+                    disabled={guests >= MAX_GUESTS}
+                    aria-label="Aumentar quantidade de hóspedes"
+                    className="w-8 h-8 rounded-xs border border-[#DFD6C3] bg-white text-[#1C1917] flex items-center justify-center disabled:opacity-35 disabled:cursor-not-allowed hover:bg-[#EFE9DC] cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+
+              {selectionError && (
+                <div
+                  role="alert"
+                  data-testid="selection-error"
+                  className="p-3 rounded-xs bg-[#991B1B]/10 border border-[#991B1B]/30 text-xs text-[#7F1D1D] flex items-start gap-2"
+                >
+                  <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+                  <span>{selectionError}</span>
+                </div>
+              )}
+
+              {stayValidation.valid && (
+                <div
+                  data-testid="stay-summary"
+                  className="p-3.5 rounded-xs bg-[#EBF0EC] border border-[#2D4A3E]/25 text-[#1C1917] space-y-1"
+                >
+                  <div className="flex items-center gap-2 text-xs font-semibold text-[#2D4A3E]">
+                    <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
+                    <span>
+                      {hasReliableData && !isStale
+                        ? 'Período disponível na sincronização'
+                        : 'Período selecionado para consulta'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#44403C]">
+                    {stayValidation.nights}{' '}
+                    {stayValidation.nights === 1 ? 'noite selecionada' : 'noites selecionadas'} ·{' '}
+                    {guests} {guests === 1 ? 'hóspede' : 'hóspedes'}
+                  </p>
+                </div>
+              )}
+
+              <div className="space-y-2.5 pt-1">
+                <a
+                  href={whatsAppUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="whatsapp-cta"
+                  className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-[#2D4A3E] text-[#F6F3EB] text-xs uppercase tracking-[0.16em] font-medium rounded-full hover:bg-[#22382F] transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4" aria-hidden="true" />
+                  <span>
+                    {stayValidation.valid
+                      ? 'Consultar datas no WhatsApp'
+                      : 'Falar pelo WhatsApp'}
+                  </span>
+                </a>
+
+                <a
+                  href={airbnbUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="airbnb-cta"
+                  className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#132A38] text-[#F6F3EB] text-xs uppercase tracking-[0.16em] font-medium rounded-full hover:bg-[#1C3D52] transition-colors"
+                >
+                  <CalendarIcon className="w-4 h-4" aria-hidden="true" />
+                  <span>
+                    {stayValidation.valid
+                      ? 'Reservar no Airbnb'
+                      : 'Ver anúncio no Airbnb'}
+                  </span>
+                  <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                </a>
+
+                <a
+                  href={PROPERTY_CONFIG.officialLinks.booking}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-[#DFD6C3] text-[#1C1917] text-xs uppercase tracking-[0.16em] font-medium rounded-full hover:bg-[#EFE9DC] transition-colors"
+                >
+                  <span>Ver no Booking.com</span>
+                  <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Coluna Direita (8 colunas): Calendário Duplo Interativo */}
+          <div className="lg:col-span-8 bg-[#F6F3EB] text-[#1C1917] rounded-xs p-5 sm:p-8 shadow-xl">
             <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#DFD6C3]">
               <button
                 type="button"
                 onClick={handlePrevMonth}
                 disabled={!canGoPrevMonth}
                 aria-label="Mês anterior"
-                className="p-2 rounded-xs border border-[#DFD6C3] bg-[#F6F3EB] text-[#1C1917] disabled:opacity-35 disabled:cursor-not-allowed hover:bg-white transition-colors cursor-pointer"
+                className="p-2 rounded-full border border-[#DFD6C3] bg-[#EFE9DC] text-[#1C1917] disabled:opacity-35 disabled:cursor-not-allowed hover:bg-white transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" aria-hidden="true" />
               </button>
@@ -563,25 +709,24 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
                 type="button"
                 onClick={handleNextMonth}
                 aria-label="Próximo mês"
-                className="p-2 rounded-xs border border-[#DFD6C3] bg-[#F6F3EB] text-[#1C1917] hover:bg-white transition-colors cursor-pointer"
+                className="p-2 rounded-full border border-[#DFD6C3] bg-[#EFE9DC] text-[#1C1917] hover:bg-white transition-colors cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
 
-            {/* Grade de 2 Meses */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {renderMonth(firstMonthGrid)}
               {renderMonth(secondMonthGrid)}
             </div>
 
-            {/* Legenda do Calendário */}
+            {/* Legenda e Sincronização */}
             <div className="mt-8 pt-5 border-t border-[#DFD6C3] flex flex-wrap items-center justify-between gap-4 text-xs text-[#57534E]">
               <div className="flex flex-wrap items-center gap-5">
                 {hasReliableData && !isStale ? (
                   <div className="flex items-center gap-2">
                     <span className="w-3.5 h-3.5 rounded-xs bg-white border border-[#E5DEC9] inline-block" />
-                    <span>Disponível (última sincronização)</span>
+                    <span>Disponível</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
@@ -592,7 +737,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
 
                 <div className="flex items-center gap-2">
                   <span className="w-3.5 h-3.5 rounded-xs bg-[#E7E2D8] inline-block" />
-                  <span>Indisponível / Reservado</span>
+                  <span>Reservado</span>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -616,7 +761,6 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
               )}
             </div>
 
-            {/* Informação da Última Sincronização */}
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-[0.72rem] text-[#57534E]">
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-[#8C5A32]" aria-hidden="true" />
@@ -631,185 +775,6 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
                 )}
               </div>
               <span>Check-in após 14h · Checkout até 12h</span>
-            </div>
-          </div>
-
-          {/* Coluna Direita: Resumo da Consulta, Seletor de Hóspedes e Canais de Conversão (5 colunas) */}
-          <div className="lg:col-span-5 bg-[#EFE9DC] border border-[#DFD6C3] rounded-sm p-6 sm:p-8 space-y-6">
-            <div>
-              <span className="text-xs uppercase tracking-[0.2em] text-[#8C5A32] font-semibold">
-                Resumo da Consulta
-              </span>
-              <h3 className="font-editorial text-2xl sm:text-3xl font-normal text-[#1C1917] mt-1">
-                Casa na Areia Preá
-              </h3>
-              <p className="text-xs text-[#57534E] mt-1">
-                Espaço inteiro · 6 suítes · Até 14 hóspedes
-              </p>
-            </div>
-
-            {/* Campos Visuais de Check-in e Checkout */}
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3.5 bg-[#F6F3EB] border border-[#DFD6C3] rounded-xs">
-                <span className="block text-[0.65rem] uppercase tracking-[0.16em] text-[#57534E]">
-                  Check-in
-                </span>
-                <span
-                  data-testid="selected-checkin"
-                  className="mt-1 block text-sm font-medium text-[#1C1917]"
-                >
-                  {checkIn ? formatDisplayDatePtBr(checkIn, 'short') : 'Selecione no calendário'}
-                </span>
-              </div>
-
-              <div className="p-3.5 bg-[#F6F3EB] border border-[#DFD6C3] rounded-xs">
-                <span className="block text-[0.65rem] uppercase tracking-[0.16em] text-[#57534E]">
-                  Checkout
-                </span>
-                <span
-                  data-testid="selected-checkout"
-                  className="mt-1 block text-sm font-medium text-[#1C1917]"
-                >
-                  {checkOut ? formatDisplayDatePtBr(checkOut, 'short') : 'Selecione no calendário'}
-                </span>
-              </div>
-            </div>
-
-            {/* Seletor de Hóspedes (1 a 14) */}
-            <div className="p-4 bg-[#F6F3EB] border border-[#DFD6C3] rounded-xs flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Users className="w-4 h-4 text-[#8C5A32]" aria-hidden="true" />
-                <div>
-                  <label
-                    htmlFor="guests-input"
-                    className="block text-xs uppercase tracking-wider text-[#57534E]"
-                  >
-                    Quantidade de Hóspedes
-                  </label>
-                  <span className="text-xs text-[#57534E]">Máximo de {MAX_GUESTS} pessoas</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleGuestChange(guests - 1)}
-                  disabled={guests <= MIN_GUESTS}
-                  aria-label="Diminuir quantidade de hóspedes"
-                  className="w-8 h-8 rounded-xs border border-[#DFD6C3] bg-white text-[#1C1917] flex items-center justify-center disabled:opacity-35 disabled:cursor-not-allowed hover:bg-[#EFE9DC] cursor-pointer"
-                >
-                  <Minus className="w-3.5 h-3.5" aria-hidden="true" />
-                </button>
-
-                <input
-                  id="guests-input"
-                  type="number"
-                  min={MIN_GUESTS}
-                  max={MAX_GUESTS}
-                  value={guests}
-                  onChange={(e) => handleGuestChange(Number(e.target.value))}
-                  aria-label="Quantidade de hóspedes"
-                  className="w-12 text-center text-sm font-semibold text-[#1C1917] bg-transparent focus:outline-none"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => handleGuestChange(guests + 1)}
-                  disabled={guests >= MAX_GUESTS}
-                  aria-label="Aumentar quantidade de hóspedes"
-                  className="w-8 h-8 rounded-xs border border-[#DFD6C3] bg-white text-[#1C1917] flex items-center justify-center disabled:opacity-35 disabled:cursor-not-allowed hover:bg-[#EFE9DC] cursor-pointer"
-                >
-                  <Plus className="w-3.5 h-3.5" aria-hidden="true" />
-                </button>
-              </div>
-            </div>
-
-            {/* Mensagem de erro de validação ou confirmação do período */}
-            {selectionError && (
-              <div
-                role="alert"
-                data-testid="selection-error"
-                className="p-3.5 rounded-xs bg-[#991B1B]/10 border border-[#991B1B]/30 text-xs text-[#7F1D1D] flex items-start gap-2.5"
-              >
-                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
-                <span>{selectionError}</span>
-              </div>
-            )}
-
-            {stayValidation.valid && (
-              <div
-                data-testid="stay-summary"
-                className="p-4 rounded-xs bg-[#EBF0EC] border border-[#2D4A3E]/25 text-[#1C1917] space-y-1"
-              >
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#2D4A3E]">
-                  <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
-                  <span>
-                    {hasReliableData && !isStale
-                      ? 'Período disponível conforme última sincronização'
-                      : 'Período selecionado para consulta direta'}
-                  </span>
-                </div>
-                <p className="text-xs text-[#44403C]">
-                  {stayValidation.nights}{' '}
-                  {stayValidation.nights === 1 ? 'noite selecionada' : 'noites selecionadas'} ·{' '}
-                  {guests} {guests === 1 ? 'hóspede' : 'hóspedes'}
-                </p>
-              </div>
-            )}
-
-            {/* Botões de Conversão nos Canais Oficiais */}
-            <div className="space-y-3 pt-2">
-              <a
-                href={whatsAppUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-testid="whatsapp-cta"
-                className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 bg-[#2D4A3E] text-[#F6F3EB] text-xs uppercase tracking-[0.14em] font-medium rounded-sm hover:bg-[#22382F] transition-colors"
-              >
-                <MessageCircle className="w-4 h-4" aria-hidden="true" />
-                <span>
-                  {stayValidation.valid
-                    ? 'Consultar datas pelo WhatsApp'
-                    : 'Falar pelo WhatsApp Oficial'}
-                </span>
-              </a>
-
-              <a
-                href={airbnbUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-testid="airbnb-cta"
-                className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-[#132A38] text-[#F6F3EB] text-xs uppercase tracking-[0.14em] font-medium rounded-sm hover:bg-[#1C3D52] transition-colors"
-              >
-                <CalendarIcon className="w-4 h-4" aria-hidden="true" />
-                <span>
-                  {stayValidation.valid
-                    ? 'Continuar reserva no Airbnb'
-                    : 'Ver anúncio oficial no Airbnb'}
-                </span>
-                <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
-              </a>
-
-              <a
-                href={PROPERTY_CONFIG.officialLinks.booking}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#F6F3EB] border border-[#DFD6C3] text-[#1C1917] text-xs uppercase tracking-[0.14em] font-medium rounded-sm hover:bg-white transition-colors"
-              >
-                <span>Ver no Booking.com</span>
-                <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
-              </a>
-            </div>
-
-            {/* Nota de transparência sobre limitações do iCal */}
-            <div className="pt-4 border-t border-[#DFD6C3] flex items-start gap-2.5 text-[0.72rem] text-[#57534E] leading-relaxed">
-              <Info className="w-4 h-4 text-[#8C5A32] shrink-0 mt-0.5" aria-hidden="true" />
-              <p>
-                <strong>Nota sobre disponibilidade:</strong> A consulta apresenta os bloqueios
-                observados na última sincronização do calendário iCal do Airbnb. Como o feed pode ter
-                intervalo de propagação e não processa reservas em tempo real, a confirmação final de
-                disponibilidade, tarifas e condições ocorre diretamente no canal oficial escolhido.
-              </p>
             </div>
           </div>
         </div>

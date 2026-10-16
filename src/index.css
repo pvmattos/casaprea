@@ -7,20 +7,32 @@
     --color-sand-border: #DFD6C3;
     --color-wood: #8C5A32;
     --color-wood-dark: #6E4524;
+    --color-gold: #D5B895;
     --color-ocean: #132A38;
+    --color-ocean-deep: #0B1922;
     --color-ocean-mid: #1C3D52;
     --color-palm: #2D4A3E;
     --color-ink: #1C1917;
     --color-stone: #57534E;
     --font-serif: 'Cormorant Garamond', Georgia, Cambria, 'Times New Roman', serif;
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --ease-editorial: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-in-out-editorial: cubic-bezier(0.75, 0, 0.25, 1);
   }
 
   html {
     font-family: var(--font-sans);
+    background-color: var(--color-ocean-deep);
+    color: var(--color-ink);
+    scroll-padding-top: 4.5rem;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
     background-color: var(--color-sand-light);
     color: var(--color-ink);
-    scroll-padding-top: 5rem;
+    overflow-x: clip;
   }
 
   h1, h2, h3, .font-editorial {
@@ -29,13 +41,168 @@
 
   /* Estados de foco visíveis e acessíveis */
   :focus-visible {
-    outline: 2px solid var(--color-ocean);
+    outline: 2px solid var(--color-wood);
     outline-offset: 3px;
   }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-gold);
+  }
+}
+
+/* Efeito Ken Burns contínuo no Hero */
+@keyframes kenburns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.07);
+  }
+}
+
+.kenburns {
+  animation: kenburns 32s ease-out forwards;
+}
+
+/* Text Roll vertical nos links de navegação */
+.roll {
+  vertical-align: bottom;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.roll-in {
+  transition: transform 0.55s var(--ease-editorial);
+  display: block;
+  position: relative;
+}
+
+.roll-in::after {
+  content: attr(data-label);
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
+
+@media (hover: hover) {
+  a:hover .roll-in,
+  button:hover .roll-in {
+    transform: translateY(-100%);
+  }
+}
+
+/* Sublinhado progressivo editorial */
+.link-u {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0 1px;
+  transition: background-size 0.4s var(--ease-editorial);
+}
+
+.link-u:hover,
+.link-u:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* Sistema de revelação no scroll (Scroll Reveal Editorial) */
+.motion-ready [data-reveal="h"],
+.motion-ready [data-reveal="p"],
+.motion-ready [data-reveal="ctn"],
+.motion-ready [data-reveal="slide"] {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.motion-ready [data-reveal="h"] {
+  transform: translate3d(0, 32px, 0);
+  transition:
+    opacity 1.15s var(--ease-editorial),
+    transform 1.15s var(--ease-editorial);
+}
+
+.motion-ready [data-reveal="p"],
+.motion-ready [data-reveal="ctn"] {
+  transform: translate3d(0, 36px, 0);
+  transition:
+    opacity 1.15s var(--ease-editorial),
+    transform 1.15s var(--ease-editorial);
+}
+
+.motion-ready [data-reveal="slide"] {
+  transform: translate3d(0, 44px, 0);
+  transition:
+    opacity 1.2s var(--ease-editorial),
+    transform 1.2s var(--ease-editorial);
+}
+
+.motion-ready [data-reveal="slide"] > * {
+  transform: scale(1.08);
+  transition: transform 1.8s var(--ease-editorial);
+}
+
+.motion-ready [data-reveal].is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.motion-ready [data-reveal="slide"].is-revealed > * {
+  transform: scale(1);
+}
+
+/* Animação de entrada do Hero */
+@keyframes heroFadeUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.hero-anim-1 {
+  animation: heroFadeUp 1.2s var(--ease-editorial) 0.1s both;
+}
+
+.hero-anim-2 {
+  animation: heroFadeUp 1.2s var(--ease-editorial) 0.24s both;
+}
+
+.hero-anim-3 {
+  animation: heroFadeUp 1.2s var(--ease-editorial) 0.38s both;
+}
+
+.hero-anim-4 {
+  animation: heroFadeUp 1.2s var(--ease-editorial) 0.52s both;
+}
+
+/* Escrita vertical lateral no Hero */
+.writing-vertical {
+  writing-mode: vertical-rl;
 }
 
 /* Respeito à preferência por movimento reduzido */
 @media (prefers-reduced-motion: reduce) {
+  .kenburns,
+  .hero-anim-1,
+  .hero-anim-2,
+  .hero-anim-3,
+  .hero-anim-4 {
+    animation: none !important;
+  }
+
+  .motion-ready [data-reveal="h"],
+  .motion-ready [data-reveal="p"],
+  .motion-ready [data-reveal="ctn"],
+  .motion-ready [data-reveal="slide"],
+  .motion-ready [data-reveal="slide"] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
   *,
   *::before,
   *::after {
