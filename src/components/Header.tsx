@@ -16,7 +16,7 @@ export const Header: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      setIsScrolled(window.scrollY > 100);
     };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -41,7 +41,7 @@ export const Header: React.FC = () => {
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         solidHeader
           ? 'bg-[#F6F3EB]/95 backdrop-blur-md border-b border-[#DFD6C3] py-3.5 text-[#1C1917] shadow-xs'
-          : 'bg-gradient-to-b from-black/55 via-black/25 to-transparent py-5 text-[#F6F3EB]'
+          : 'bg-gradient-to-b from-black/75 via-black/40 to-transparent py-4 sm:py-5 text-[#F6F3EB]'
       }`}
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 flex items-center justify-between">
