@@ -1,0 +1,39 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "casa-na-areia-prea"
+main = "src/worker/index.ts"
+compatibility_date = "2025-03-01"
+
+# Hospedagem de assets estáticos do build Vite integrada ao Worker
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# Agendamento periódico (Cron Trigger) a cada 15 minutos para sincronizar o calendário iCal do Airbnb
+[triggers]
+crons = ["*/15 * * * *"]
+
+# Variáveis públicas de configuração (não sensíveis)
+[vars]
+ENVIRONMENT = "production"
+SYNC_INTERVAL_MINUTES = "15"
+STALE_THRESHOLD_MINUTES = "60"
+ICAL_FETCH_TIMEOUT_MS = "10000"
+ICAL_MAX_BYTES = "1048576"
+PROPERTY_TIMEZONE = "America/Fortaleza"
+
+# Binding do Cloudflare KV para cache persistente de disponibilidade e estado de sincronização.
+# Antes do deploy em produção, crie o namespace com:
+#   npx wrangler kv namespace create AVAILABILITY_KV
+#   npx wrangler kv namespace create AVAILABILITY_KV --preview
+# e substitua os IDs abaixo pelos IDs gerados na sua conta Cloudflare.
+[[kv_namespaces]]
+binding = "AVAILABILITY_KV"
+id = "REPLACE_WITH_PRODUCTION_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"
+
+# Segredos obrigatórios (NUNCA coloque valores reais neste arquivo):
+# Configure via CLI da Cloudflare:
+#   npx wrangler secret put AIRBNB_ICAL_URL
+#   npx wrangler secret put ADMIN_SYNC_TOKEN
+# Para desenvolvimento local, utilize o arquivo .dev.vars (ignorado pelo Git).

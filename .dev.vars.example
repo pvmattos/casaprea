@@ -1,0 +1,8 @@
+# Copie este arquivo para .dev.vars para desenvolvimento local com Wrangler
+# NUNCA faça commit do arquivo .dev.vars com URLs ou tokens reais.
+
+# URL privada do calendário iCal exportada do Airbnb (Configurações de disponibilidade -> Exportar calendário)
+AIRBNB_ICAL_URL=""
+
+# Token secreto para proteger o endpoint administrativo POST /api/admin/sync
+ADMIN_SYNC_TOKEN="substitua-por-um-token-secreto-forte"

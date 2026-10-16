@@ -1,0 +1,20 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+.wrangler/
+*.tsbuildinfo
+
+# Variáveis de ambiente e segredos locais (NUNCA versionar)
+.env
+.env.*
+!.env.example
+.dev.vars
+!.dev.vars.example
+
+# Logs e sistema
+*.log
+.DS_Store
+Thumbs.db
+coverage/
