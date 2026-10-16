@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#132A38" />
+  <!-- Linhas sutis do mar / dunas do Preá -->
+  <path d="M12 44 Q 22 41 32 44 T 52 44" fill="none" stroke="#D5B895" stroke-width="2.5" stroke-linecap="round" opacity="0.45" />
+  <path d="M14 49 Q 24 46 34 49 T 50 49" fill="none" stroke="#D5B895" stroke-width="2" stroke-linecap="round" opacity="0.3" />
+  <!-- Monograma Editorial "CA" (Casa na Areia) -->
+  <text x="32" y="34" font-family="'Cormorant Garamond', Georgia, serif" font-size="26" font-weight="600" fill="#F6F3EB" text-anchor="middle" letter-spacing="-1">CA</text>
+  <!-- Ponto dourado do sol -->
+  <circle cx="45" cy="18" r="2.5" fill="#D5B895" />
+</svg>
