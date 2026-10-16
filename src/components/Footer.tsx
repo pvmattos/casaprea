@@ -6,9 +6,11 @@ export const Footer: React.FC = () => {
 
   return (
     <>
-      {/* Seção Final de Impacto com Expansão por Scroll (Inspirada no concorrente) */}
+      {/* Seção Final de Impacto com Expansão por Scroll e Parallax */}
       <section
         data-cta-scroll
+        data-parallax-w
+        data-parallax-amp="16"
         aria-label="Chamada final para reserva"
         className="relative h-[88svh] w-full overflow-hidden bg-[#0A161E] text-[#F6F3EB]"
       >
@@ -21,7 +23,8 @@ export const Footer: React.FC = () => {
             alt="Casa na Areia Preá vista diretamente da areia da Praia do Preá"
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover object-center"
+            data-parallax-img
+            className="pointer-events-none absolute inset-x-0 -top-[16%] h-[132%] w-full object-cover object-center will-change-transform"
           />
           <div
             className="absolute inset-0 bg-gradient-to-t from-[#050D13]/90 via-[#050D13]/45 to-black/35"

@@ -44,7 +44,7 @@ describe('Interface Visual, Navegação, Galeria e Calendário Interativo', () =
 
     render(<App />);
     await waitFor(() => {
-      expect(screen.getByText(/Última sincronização com o Airbnb:/i)).toBeInTheDocument();
+      expect(screen.queryByTestId('calendar-loading')).not.toBeInTheDocument();
     });
 
     // Verifica título principal do Hero e indicadores

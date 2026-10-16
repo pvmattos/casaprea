@@ -40,8 +40,8 @@ export const Header: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
         solidHeader
-          ? 'bg-[#F6F3EB]/92 backdrop-blur-md border-b border-[#1C1917]/10 py-3.5 text-[#1C1917]'
-          : 'bg-gradient-to-b from-black/70 via-black/30 to-transparent py-5 text-[#F6F3EB]'
+          ? 'bg-[#F6F3EB]/94 backdrop-blur-md border-b border-[#1C1917]/10 py-3.5 text-[#1C1917]'
+          : 'header-transparent bg-gradient-to-b from-black/70 via-black/30 to-transparent py-5 text-[#F6F3EB]'
       }`}
     >
       <div className="mx-auto max-w-[1400px] px-6 md:px-10 flex items-center justify-between">
@@ -54,17 +54,19 @@ export const Header: React.FC = () => {
           Casa na Areia <span className="italic font-normal opacity-85">Preá</span>
         </a>
 
-        {/* Navegação Desktop com efeito roll sofisticado */}
+        {/* Navegação Desktop com efeito roll vertical corrigido */}
         <nav aria-label="Navegação principal" className="hidden lg:flex items-center gap-9 text-sm">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className={`roll transition-opacity ${
-                solidHeader ? 'text-[#1C1917]/80 hover:text-[#1C1917]' : 'text-[#F6F3EB]/90 hover:text-white'
+              className={`roll transition-colors ${
+                solidHeader
+                  ? 'text-[#1C1917]/85 hover:text-[#1C1917]'
+                  : 'text-[#F6F3EB]/90 hover:text-white'
               }`}
             >
-              <span className="roll-in" data-t={item.label}>
+              <span className="roll-in" data-label={item.label}>
                 {item.label}
               </span>
             </a>

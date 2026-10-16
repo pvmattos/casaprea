@@ -9,10 +9,12 @@ import { AmenitiesSection } from './components/AmenitiesSection';
 import { AvailabilitySection } from './components/AvailabilitySection';
 import { Footer } from './components/Footer';
 import { MotionController } from './components/MotionController';
+import { Preloader } from './components/Preloader';
 
 export const App: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-[#F6F3EB] text-[#1C1917]">
+      <Preloader />
       <MotionController />
       <a
         href="#conteudo-principal"

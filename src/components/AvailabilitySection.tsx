@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
-  Clock,
   ExternalLink,
   Loader2,
   MessageCircle,
@@ -78,24 +77,6 @@ function buildMonthGrid(year: number, month: number): MonthGridData {
     });
   }
   return { year, month, days };
-}
-
-function formatSyncTimestampPtBr(isoString: string | null): string | null {
-  if (!isoString) return null;
-  const date = new Date(isoString);
-  if (Number.isNaN(date.getTime())) return null;
-  try {
-    return new Intl.DateTimeFormat('pt-BR', {
-      timeZone: 'America/Fortaleza',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date);
-  } catch {
-    return date.toISOString();
-  }
 }
 
 export interface AvailabilitySectionProps {
@@ -275,11 +256,6 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
     });
   }, [checkIn, checkOut, guests, unavailableRanges, todayIso]);
 
-  const syncedAtFormatted = useMemo(
-    () => formatSyncTimestampPtBr(apiData?.lastSyncedAt ?? null),
-    [apiData?.lastSyncedAt]
-  );
-
   const whatsAppUrl = useMemo(() => {
     if (stayValidation.valid) {
       return buildWhatsAppInquiryUrl({
@@ -386,11 +362,9 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
               ? 'Indisponível (reservado)'
               : isCheckoutOnlyCandidate
                 ? 'Disponível apenas para checkout até as 12h'
-                : !hasReliableData
-                  ? 'Disponibilidade sob consulta direta'
-                  : isStale
-                    ? 'Disponibilidade sujeita a confirmação (dados desatualizados)'
-                    : 'Disponível na última sincronização';
+                : !hasReliableData || isStale
+                  ? 'Disponibilidade sob consulta'
+                  : 'Disponível';
 
           return (
             <button
@@ -442,7 +416,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
       className="py-24 md:py-36 bg-[#132A38] text-[#F6F3EB]"
     >
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
-        {/* Avisos de Estado de Sincronização */}
+        {/* Avisos de Estado */}
         {loading && (
           <div
             role="status"
@@ -450,7 +424,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
             className="mb-8 p-4 rounded-xs bg-white/10 border border-white/15 flex items-center gap-3 text-sm text-[#F6F3EB]"
           >
             <Loader2 className="w-4 h-4 animate-spin text-[#D5B895]" aria-hidden="true" />
-            <span>Consultando calendário sincronizado de disponibilidade...</span>
+            <span>Carregando datas disponíveis...</span>
           </div>
         )}
 
@@ -467,16 +441,10 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
               />
               <div>
                 <h3 className="text-sm font-semibold text-[#1C1917]">
-                  {fetchError
-                    ? 'Não foi possível atualizar o calendário neste instante'
-                    : !hasReliableData
-                      ? 'Disponibilidade sujeita a confirmação direta'
-                      : 'Dados do calendário aguardando nova atualização'}
+                  Disponibilidade sob consulta direta
                 </h3>
                 <p className="mt-1 text-xs sm:text-sm text-[#44403C] leading-relaxed">
-                  {fetchError ||
-                    apiData?.message ||
-                    'A disponibilidade online não pode ser apresentada como confirmada no momento. Você ainda pode selecionar as datas desejadas abaixo e consultar diretamente pelo WhatsApp ou Airbnb oficial.'}
+                  Selecione as datas desejadas abaixo para consultar a estadia pelo WhatsApp ou Airbnb oficial.
                 </p>
               </div>
             </div>
@@ -488,7 +456,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs uppercase tracking-wider font-medium bg-[#EFE9DC] border border-[#DFD6C3] text-[#1C1917] rounded-xs hover:bg-white transition-colors cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>Tentar novamente</span>
+                <span>Atualizar</span>
               </button>
               <a
                 href={whatsAppUrl}
@@ -524,7 +492,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
                 data-reveal="p"
                 className="mt-4 text-sm sm:text-base text-[#EFE9DC]/80 font-light leading-relaxed"
               >
-                Escolha as datas de check-in e checkout no calendário sincronizado com o Airbnb.
+                Escolha as datas de check-in e checkout no calendário para consultar sua estadia.
               </p>
             </div>
 
@@ -623,11 +591,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
                 >
                   <div className="flex items-center gap-2 text-xs font-semibold text-[#2D4A3E]">
                     <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
-                    <span>
-                      {hasReliableData && !isStale
-                        ? 'Período disponível na sincronização'
-                        : 'Período selecionado para consulta'}
-                    </span>
+                    <span>Período disponível para reserva</span>
                   </div>
                   <p className="text-xs text-[#44403C]">
                     {stayValidation.nights}{' '}
@@ -720,7 +684,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
               {renderMonth(secondMonthGrid)}
             </div>
 
-            {/* Legenda e Sincronização */}
+            {/* Legenda Limpa do Calendário */}
             <div className="mt-8 pt-5 border-t border-[#DFD6C3] flex flex-wrap items-center justify-between gap-4 text-xs text-[#57534E]">
               <div className="flex flex-wrap items-center gap-5">
                 {hasReliableData && !isStale ? (
@@ -731,7 +695,7 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
                 ) : (
                   <div className="flex items-center gap-2">
                     <span className="w-3.5 h-3.5 rounded-xs bg-[#FAF8F5] border border-[#E5DEC9] inline-block" />
-                    <span>Sob consulta direta</span>
+                    <span>Sob consulta</span>
                   </div>
                 )}
 
@@ -746,35 +710,24 @@ export const AvailabilitySection: React.FC<AvailabilitySectionProps> = ({
                 </div>
               </div>
 
-              {(checkIn || checkOut) && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCheckIn('');
-                    setCheckOut('');
-                    setSelectionError(null);
-                  }}
-                  className="text-xs font-medium text-[#8C5A32] hover:underline cursor-pointer"
-                >
-                  Limpar datas
-                </button>
-              )}
-            </div>
-
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-[0.72rem] text-[#57534E]">
-              <div className="flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#8C5A32]" aria-hidden="true" />
-                {syncedAtFormatted ? (
-                  <span>
-                    Última sincronização com o Airbnb: <strong>{syncedAtFormatted}</strong> (horário do Ceará)
-                  </span>
-                ) : (
-                  <span>
-                    Sincronização periódica a cada {apiData?.syncIntervalMinutes ?? 15} minutos
-                  </span>
+              <div className="flex items-center gap-4">
+                {(checkIn || checkOut) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCheckIn('');
+                      setCheckOut('');
+                      setSelectionError(null);
+                    }}
+                    className="text-xs font-medium text-[#8C5A32] hover:underline cursor-pointer"
+                  >
+                    Limpar datas
+                  </button>
                 )}
+                <span className="text-[0.72rem] text-[#57534E]">
+                  Check-in após 14h · Checkout até 12h
+                </span>
               </div>
-              <span>Check-in após 14h · Checkout até 12h</span>
             </div>
           </div>
         </div>

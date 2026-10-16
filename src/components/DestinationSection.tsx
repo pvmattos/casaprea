@@ -8,7 +8,7 @@ export const DestinationSection: React.FC = () => {
 
   return (
     <>
-      {/* 03 · Rooftop e piscina — Split Full-Bleed 8/4 em Azul Oceano Profundo */}
+      {/* 03 · Rooftop e piscina — Split Full-Bleed 8/4 com Parallax em Azul Oceano Profundo */}
       <section
         id="experiencia"
         aria-labelledby="rooftop-heading"
@@ -17,6 +17,7 @@ export const DestinationSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12">
           <div
             data-parallax-w
+            data-parallax-amp="16"
             className="relative lg:col-span-8 min-h-[68svh] lg:min-h-[88svh] overflow-hidden"
           >
             <img
@@ -25,7 +26,7 @@ export const DestinationSection: React.FC = () => {
               loading="lazy"
               decoding="async"
               data-parallax-img
-              className="h-[115%] w-full object-cover"
+              className="pointer-events-none absolute inset-x-0 -top-[16%] h-[132%] w-full object-cover object-center will-change-transform"
             />
           </div>
 
@@ -92,17 +93,20 @@ export const DestinationSection: React.FC = () => {
             </p>
           </div>
 
-          {/* Imagem Panorâmica 16/9 */}
+          {/* Imagem Panorâmica 16/9 com Parallax suave */}
           <div
             data-reveal="ctn"
-            className="mt-12 overflow-hidden rounded-xs bg-[#EFE9DC] aspect-[16/9]"
+            data-parallax-w
+            data-parallax-amp="10"
+            className="relative mt-12 overflow-hidden rounded-xs bg-[#EFE9DC] aspect-[16/9]"
           >
             <img
               src="/images/social-jantar-integrado.jpg"
               alt="Sala de jantar com mesa em madeira maciça integrada à varanda e ao jardim central da Casa na Areia Preá"
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover"
+              data-parallax-img
+              className="pointer-events-none absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover will-change-transform"
             />
           </div>
 
@@ -148,10 +152,11 @@ export const DestinationSection: React.FC = () => {
         </div>
       </section>
 
-      {/* 05 · Ao entardecer — Full-Bleed Noturno com Parallax */}
+      {/* 05 · Ao entardecer — Full-Bleed Noturno com Parallax Pronunciado */}
       <section
         aria-labelledby="twilight-heading"
         data-parallax-w
+        data-parallax-amp="18"
         className="relative h-[82svh] md:h-[92svh] w-full overflow-hidden bg-[#0A161E] text-[#F6F3EB]"
       >
         <img
@@ -160,7 +165,7 @@ export const DestinationSection: React.FC = () => {
           loading="lazy"
           decoding="async"
           data-parallax-img
-          className="h-[116%] w-full object-cover object-center"
+          className="pointer-events-none absolute inset-x-0 -top-[18%] h-[136%] w-full object-cover object-center will-change-transform"
         />
         <div
           className="absolute inset-0 bg-gradient-to-t from-[#050D13]/85 via-[#050D13]/25 to-black/30"

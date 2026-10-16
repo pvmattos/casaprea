@@ -20,12 +20,11 @@ export const SuitesSection: React.FC = () => {
               className="relative overflow-hidden rounded-xs bg-[#DFD6C3] aspect-[4/5]"
             >
               <img
-                key={activeSuite.image}
                 src={activeSuite.image}
                 alt={activeSuite.imageAlt}
                 loading="lazy"
                 decoding="async"
-                className="h-full w-full object-cover transition-all duration-700"
+                className="h-full w-full object-cover transition-all duration-500"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent p-6 text-[#F6F3EB]">
                 <span className="text-[11px] uppercase tracking-[0.24em] text-[#D5B895]">
@@ -92,18 +91,17 @@ export const SuitesSection: React.FC = () => {
               hóspedes com conforto.
             </p>
 
-            {/* Lista tipográfica limpa inspirada na referência */}
-            <div className="mt-10 border-t border-[#1C1917]/15">
+            {/* Lista tipográfica estável — hover troca a foto ao lado sem esconder o texto */}
+            <div data-reveal="ctn" className="mt-10 border-t border-[#1C1917]/15">
               {SUITES_DATA.map((suite, idx) => {
                 const isSelected = idx === activeSuiteIndex;
                 return (
                   <div
                     key={suite.id}
-                    data-reveal="slide"
                     onMouseEnter={() => setActiveSuiteIndex(idx)}
                     onClick={() => setActiveSuiteIndex(idx)}
-                    className={`group flex items-baseline justify-between gap-4 border-b border-[#1C1917]/15 py-5 px-3 -mx-3 rounded-xs transition-colors cursor-pointer ${
-                      isSelected ? 'bg-[#F6F3EB]/85' : 'hover:bg-[#F6F3EB]/50'
+                    className={`group flex items-baseline justify-between gap-4 border-b border-[#1C1917]/15 py-5 px-3 -mx-3 rounded-xs transition-colors duration-200 cursor-pointer ${
+                      isSelected ? 'bg-[#F6F3EB]' : 'hover:bg-[#F6F3EB]/60'
                     }`}
                   >
                     <div className="flex items-baseline gap-4">

@@ -118,7 +118,7 @@ export const GallerySection: React.FC = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              {/* Filtros discretos */}
+              {/* Filtros de Categoria */}
               <div
                 role="tablist"
                 aria-label="Filtrar fotografias por ambiente"
@@ -159,11 +159,14 @@ export const GallerySection: React.FC = () => {
             </div>
           </div>
 
-          {/* Mosaico Assimétrico (Bento Grid 4 colunas inspirado no concorrente) */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          {/* Mosaico Assimétrico estável — data-reveal apenas no container pai para que os itens filtrados nunca sumam */}
+          <div
+            data-reveal="ctn"
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
+          >
             {displayedItems.map((item, idx) => {
               let bentoClass = 'aspect-square';
-              if (!showAllPhotos && selectedCategory === 'Todas') {
+              if (!showAllPhotos && displayedItems.length >= 6) {
                 if (idx === 0) bentoClass = 'col-span-2 row-span-2 aspect-square';
                 else if (idx === 5) bentoClass = 'col-span-2 aspect-[2/1]';
               }
@@ -172,7 +175,6 @@ export const GallerySection: React.FC = () => {
                 <button
                   key={item.id}
                   type="button"
-                  data-reveal="ctn"
                   onClick={() => setActiveIndex(idx)}
                   aria-label={`Ampliar fotografia: ${item.caption}`}
                   className={`group relative overflow-hidden rounded-xs bg-[#DFD6C3] text-left focus:outline-none cursor-pointer ${bentoClass}`}
@@ -321,11 +323,12 @@ export const GallerySection: React.FC = () => {
         )}
       </section>
 
-      {/* Interlúdio Full-Bleed Aéreo com Parallax (Inspirado no concorrente) */}
+      {/* Interlúdio Full-Bleed Aéreo com Efeito Parallax Pronunciado */}
       <section
         aria-label="Vista aérea da propriedade"
         data-parallax-w
-        className="relative h-[78svh] md:h-[88svh] w-full overflow-hidden bg-[#0E202B] text-[#F6F3EB]"
+        data-parallax-amp="18"
+        className="relative h-[80svh] md:h-[90svh] w-full overflow-hidden bg-[#0E202B] text-[#F6F3EB]"
       >
         <img
           src="/images/rooftop-zenital-arquitetura.jpg"
@@ -333,10 +336,10 @@ export const GallerySection: React.FC = () => {
           loading="lazy"
           decoding="async"
           data-parallax-img
-          className="h-[116%] w-full object-cover object-center"
+          className="pointer-events-none absolute inset-x-0 -top-[18%] h-[136%] w-full object-cover object-center will-change-transform"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-[#050D13]/80 via-transparent to-black/25"
+          className="absolute inset-0 bg-gradient-to-t from-[#050D13]/85 via-transparent to-black/30"
           aria-hidden="true"
         />
         <div className="relative z-10 mx-auto flex h-full max-w-[1400px] items-end px-6 pb-12 md:px-10 md:pb-16">

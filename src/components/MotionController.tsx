@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 
 /**
  * Orquestrador de animações editoriais:
- * - Scroll Reveal escalonado (data-reveal="h" | "p" | "ctn" | "slide")
- * - Parallax suave em fotografias de grande formato (data-parallax-w / data-parallax-img)
+ * - Scroll Reveal escalonado (data-reveal="h" | "p" | "ctn" | "slide") imune a re-renders do React
+ * - Parallax pronunciado e suave em fotografias de grande formato (data-parallax-w / data-parallax-img)
  * - Botões magnéticos em telas desktop (data-magnetic)
  * - Animação de recorte progressivo no CTA final (data-cta-scroll)
  */
@@ -18,59 +18,80 @@ export const MotionController: React.FC = () => {
     if (prefersReducedMotion) return;
 
     const root = document.documentElement;
-
-    // Em ambientes com IntersectionObserver real (navegador), ativa revelação progressiva
     const hasIntersectionObserver = typeof window.IntersectionObserver === 'function';
     if (hasIntersectionObserver) {
       root.classList.add('motion-ready');
     }
 
-    const revealElements = Array.from(
-      document.querySelectorAll<HTMLElement>('[data-reveal]')
-    );
+    const markRevealed = (el: HTMLElement) => {
+      el.setAttribute('data-revealed', 'true');
+      el.classList.add('is-revealed');
+    };
 
-    // Calcula atraso escalonado (stagger) entre elementos irmãos dentro do mesmo bloco
-    revealElements.forEach((el) => {
-      const parent = el.parentElement;
-      if (!parent) return;
-      const siblings = Array.from(parent.children).filter((child) =>
-        child.hasAttribute('data-reveal')
-      );
-      const idx = siblings.indexOf(el);
-      if (idx > 0) {
-        el.style.transitionDelay = `${Math.min(idx * 90, 360)}ms`;
-      }
-    });
-
-    let observer: IntersectionObserver | null = null;
+    let io: IntersectionObserver | null = null;
     if (hasIntersectionObserver) {
-      observer = new IntersectionObserver(
+      io = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               const target = entry.target as HTMLElement;
-              target.classList.add('is-revealed');
-              observer?.unobserve(target);
+              markRevealed(target);
+              io?.unobserve(target);
             }
           });
         },
         {
-          threshold: 0.08,
-          rootMargin: '0px 0px -6% 0px',
+          threshold: 0.05,
+          rootMargin: '0px 0px -4% 0px',
         }
       );
-
-      revealElements.forEach((el) => observer?.observe(el));
-    } else {
-      revealElements.forEach((el) => el.classList.add('is-revealed'));
     }
 
-    // Parallax suave e animação do CTA final via requestAnimationFrame
-    const parallaxWrappers = Array.from(
-      document.querySelectorAll<HTMLElement>('[data-parallax-w]')
-    );
-    const ctaScroll = document.querySelector<HTMLElement>('[data-cta-scroll]');
+    const registerRevealElements = () => {
+      const elements = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-revealed="true"])')
+      );
 
+      elements.forEach((el) => {
+        const parent = el.parentElement;
+        if (parent && !el.style.transitionDelay) {
+          const siblings = Array.from(parent.children).filter((child) =>
+            child.hasAttribute('data-reveal')
+          );
+          const idx = siblings.indexOf(el);
+          if (idx > 0) {
+            el.style.transitionDelay = `${Math.min(idx * 70, 280)}ms`;
+          }
+        }
+
+        if (!io) {
+          markRevealed(el);
+          return;
+        }
+
+        // Se o elemento já está visível na tela (ex.: ao trocar filtro da galeria), revela imediatamente
+        const rect = el.getBoundingClientRect();
+        const vh = window.innerHeight || 800;
+        if (rect.top < vh * 0.96 && rect.bottom > 0) {
+          requestAnimationFrame(() => markRevealed(el));
+        } else {
+          io.observe(el);
+        }
+      });
+    };
+
+    registerRevealElements();
+
+    // Observa novos elementos inseridos dinamicamente pelo React (ex.: filtros de fotos)
+    let mo: MutationObserver | null = null;
+    if (typeof window.MutationObserver === 'function') {
+      mo = new MutationObserver(() => {
+        registerRevealElements();
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // Parallax nas seções fotográficas e animação do CTA final via requestAnimationFrame
     let rafId = 0;
     let ticking = false;
 
@@ -78,38 +99,34 @@ export const MotionController: React.FC = () => {
       ticking = false;
       const vh = window.innerHeight || 1;
 
-      // 1. Parallax nas imagens full-bleed
-      for (const wrapper of parallaxWrappers) {
+      // 1. Parallax pronunciado nas seções de fotografia única
+      const parallaxWrappers = document.querySelectorAll<HTMLElement>('[data-parallax-w]');
+      parallaxWrappers.forEach((wrapper) => {
         const img = wrapper.querySelector<HTMLElement>('[data-parallax-img]');
-        if (!img) continue;
+        if (!img) return;
         const rect = wrapper.getBoundingClientRect();
-        if (rect.bottom < -100 || rect.top > vh + 100) continue;
+        if (rect.bottom < -150 || rect.top > vh + 150) return;
 
-        const amp = Number(wrapper.dataset.parallaxAmp) || 6;
+        const amp = Number(wrapper.dataset.parallaxAmp) || 15;
         // Progresso de -1 (entrando por baixo) a +1 (saindo por cima)
         const progress = ((vh - rect.top) / (vh + rect.height)) * 2 - 1;
         const clamped = Math.max(-1, Math.min(1, progress));
         const yPercent = (clamped * amp).toFixed(2);
         img.style.transform = `translate3d(0, ${yPercent}%, 0)`;
-      }
+      });
 
-      // 2. Efeito de moldura no CTA final (inspirado no cta-scroll do concorrente)
+      // 2. Efeito de moldura e parallax no CTA final
+      const ctaScroll = document.querySelector<HTMLElement>('[data-cta-scroll]');
       if (ctaScroll) {
-        const clipEl = ctaScroll.querySelector<HTMLElement>('[data-cta-clip]');
-        const contentEl = ctaScroll.querySelector<HTMLElement>('[data-cta-content]');
+        const clipEl = ctaScroll.querySelector<HTMLElement>('[data-cta-img]');
         const rect = ctaScroll.getBoundingClientRect();
         if (rect.bottom > 0 && rect.top < vh) {
-          // Progresso conforme a seção entra na tela
           const raw = 1 - Math.max(0, Math.min(1, rect.top / (vh * 0.85)));
           const isMobile = window.innerWidth < 992;
-          const vInset = (raw * (isMobile ? 3.5 : 6)).toFixed(2);
-          const hInset = (raw * (isMobile ? 4.5 : 14)).toFixed(2);
+          const vInset = ((1 - raw) * (isMobile ? 3 : 5)).toFixed(2);
+          const hInset = ((1 - raw) * (isMobile ? 4 : 8)).toFixed(2);
           if (clipEl) {
             clipEl.style.clipPath = `inset(${vInset}% ${hInset}% ${vInset}% ${hInset}% round 4px)`;
-          }
-          if (contentEl) {
-            const scale = (0.92 + raw * 0.08).toFixed(3);
-            contentEl.style.transform = `scale(${scale})`;
           }
         }
       }
@@ -159,7 +176,8 @@ export const MotionController: React.FC = () => {
     }
 
     return () => {
-      observer?.disconnect();
+      io?.disconnect();
+      mo?.disconnect();
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
       if (rafId) window.cancelAnimationFrame(rafId);

@@ -457,7 +457,7 @@ export const FAQ_ITEMS = [
   {
     question: 'Como funciona a reserva pelo site?',
     answer:
-      'O calendário desta página é sincronizado automaticamente com o Airbnb a cada 15 minutos. Basta selecionar as datas livres e a quantidade de hóspedes para finalizar seu atendimento diretamente pelo WhatsApp oficial ou pelo anúncio verificado no Airbnb.',
+      'Basta selecionar as datas de entrada e saída no calendário e informar a quantidade de hóspedes para iniciar seu atendimento diretamente pelo WhatsApp oficial ou pelo anúncio no Airbnb.',
   },
   {
     question: 'Animais de estimação são permitidos?',
