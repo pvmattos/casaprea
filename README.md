@@ -2,7 +2,8 @@
 
 Aplicação web institucional e sistema de consulta de disponibilidade em tempo real integrado ao calendário iCal do Airbnb para a **Casa na Areia Preá** (Praia do Preá, Cruz, Ceará, Brasil).
 
-Projetada com estética editorial de hospitalidade à beira-mar e construída para hospedagem serverless na **Cloudflare** (Cloudflare Workers com Static Assets, Cloudflare KV e Cron Triggers).
+- **Site em produção**: [https://casa-na-areia-prea.pv-mattoss.workers.dev/](https://casa-na-areia-prea.pv-mattoss.workers.dev/)
+- **Hospedagem**: Cloudflare Workers + Static Assets + Cloudflare KV + Cron Triggers (RFC 5545 iCal parser nativo)
 
 ---
 
