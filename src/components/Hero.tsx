@@ -55,7 +55,6 @@ export const Hero: React.FC = () => {
             </p>
             <a
               href="#disponibilidade"
-              data-magnetic
               className="inline-flex items-center gap-3 rounded-full border border-[#F6F3EB]/80 bg-[#F6F3EB] px-7 py-3.5 text-xs uppercase tracking-[0.2em] font-medium text-[#132A38] transition-all duration-300 hover:bg-[#D5B895] hover:border-[#D5B895]"
             >
               <span>Consultar disponibilidade</span>

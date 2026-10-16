@@ -77,7 +77,6 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-3">
           <a
             href="#disponibilidade"
-            data-magnetic
             className={`hidden md:inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs uppercase tracking-[0.16em] font-medium transition-colors duration-300 ${
               solidHeader
                 ? 'bg-[#132A38] text-[#F6F3EB] hover:bg-[#8C5A32]'

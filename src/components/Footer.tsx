@@ -44,7 +44,6 @@ export const Footer: React.FC = () => {
               href={PROPERTY_CONFIG.officialLinks.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              data-magnetic
               className="inline-flex items-center gap-3 rounded-full bg-[#F6F3EB] px-8 py-4 text-xs uppercase tracking-[0.2em] font-medium text-[#132A38] transition-colors hover:bg-[#D5B895]"
             >
               <span>Reservar pelo WhatsApp</span>
@@ -54,7 +53,6 @@ export const Footer: React.FC = () => {
               href={PROPERTY_CONFIG.officialLinks.airbnb}
               target="_blank"
               rel="noopener noreferrer"
-              data-magnetic
               className="inline-flex items-center gap-3 rounded-full border border-[#F6F3EB]/60 bg-black/30 backdrop-blur-xs px-8 py-4 text-xs uppercase tracking-[0.2em] font-medium text-[#F6F3EB] transition-colors hover:bg-white/15"
             >
               <span>Ver no Airbnb</span>

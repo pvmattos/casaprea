@@ -166,7 +166,6 @@ export const AmenitiesSection: React.FC = () => {
                   href={PROPERTY_CONFIG.officialLinks.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  data-magnetic
                   className="inline-flex items-center gap-3 rounded-full border border-[#1C1917]/25 px-7 py-3.5 text-xs uppercase tracking-[0.2em] text-[#1C1917] transition-colors hover:border-[#132A38] hover:bg-[#132A38] hover:text-[#F6F3EB]"
                 >
                   <span>Falar pelo WhatsApp</span>

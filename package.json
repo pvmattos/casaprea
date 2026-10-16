@@ -1,7 +1,7 @@
 {
   "name": "casa-na-areia-prea",
   "private": true,
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Site oficial e sistema de consulta de disponibilidade — Casa na Areia Preá (Cruz, Ceará, Brasil)",
   "type": "module",
   "scripts": {

@@ -4,7 +4,6 @@ import React, { useEffect } from 'react';
  * Orquestrador de animações editoriais:
  * - Scroll Reveal escalonado (data-reveal="h" | "p" | "ctn" | "slide") imune a re-renders do React
  * - Parallax pronunciado e suave em fotografias de grande formato (data-parallax-w / data-parallax-img)
- * - Botões magnéticos em telas desktop (data-magnetic)
  * - Animação de recorte progressivo no CTA final (data-cta-scroll)
  */
 export const MotionController: React.FC = () => {
@@ -69,7 +68,6 @@ export const MotionController: React.FC = () => {
           return;
         }
 
-        // Se o elemento já está visível na tela (ex.: ao trocar filtro da galeria), revela imediatamente
         const rect = el.getBoundingClientRect();
         const vh = window.innerHeight || 800;
         if (rect.top < vh * 0.96 && rect.bottom > 0) {
@@ -82,7 +80,6 @@ export const MotionController: React.FC = () => {
 
     registerRevealElements();
 
-    // Observa novos elementos inseridos dinamicamente pelo React (ex.: filtros de fotos)
     let mo: MutationObserver | null = null;
     if (typeof window.MutationObserver === 'function') {
       mo = new MutationObserver(() => {
@@ -91,7 +88,6 @@ export const MotionController: React.FC = () => {
       mo.observe(document.body, { childList: true, subtree: true });
     }
 
-    // Parallax nas seções fotográficas e animação do CTA final via requestAnimationFrame
     let rafId = 0;
     let ticking = false;
 
@@ -108,14 +104,13 @@ export const MotionController: React.FC = () => {
         if (rect.bottom < -150 || rect.top > vh + 150) return;
 
         const amp = Number(wrapper.dataset.parallaxAmp) || 15;
-        // Progresso de -1 (entrando por baixo) a +1 (saindo por cima)
         const progress = ((vh - rect.top) / (vh + rect.height)) * 2 - 1;
         const clamped = Math.max(-1, Math.min(1, progress));
         const yPercent = (clamped * amp).toFixed(2);
         img.style.transform = `translate3d(0, ${yPercent}%, 0)`;
       });
 
-      // 2. Efeito de moldura e parallax no CTA final
+      // 2. Efeito de moldura no CTA final
       const ctaScroll = document.querySelector<HTMLElement>('[data-cta-scroll]');
       if (ctaScroll) {
         const clipEl = ctaScroll.querySelector<HTMLElement>('[data-cta-img]');
@@ -143,45 +138,12 @@ export const MotionController: React.FC = () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
 
-    // 3. Efeito magnético sutil nos botões principais em desktop
-    const isDesktop =
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(min-width: 992px) and (hover: hover)').matches;
-
-    const magneticCleanups: Array<() => void> = [];
-
-    if (isDesktop) {
-      const magneticElements = Array.from(
-        document.querySelectorAll<HTMLElement>('[data-magnetic]')
-      );
-
-      magneticElements.forEach((el) => {
-        const onMove = (e: MouseEvent) => {
-          const rect = el.getBoundingClientRect();
-          const dx = (e.clientX - (rect.left + rect.width / 2)) * 0.18;
-          const dy = (e.clientY - (rect.top + rect.height / 2)) * 0.26;
-          el.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0)`;
-        };
-        const onLeave = () => {
-          el.style.transform = 'translate3d(0, 0, 0)';
-        };
-
-        el.addEventListener('mousemove', onMove);
-        el.addEventListener('mouseleave', onLeave);
-        magneticCleanups.push(() => {
-          el.removeEventListener('mousemove', onMove);
-          el.removeEventListener('mouseleave', onLeave);
-        });
-      });
-    }
-
     return () => {
       io?.disconnect();
       mo?.disconnect();
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
       if (rafId) window.cancelAnimationFrame(rafId);
-      magneticCleanups.forEach((fn) => fn());
       root.classList.remove('motion-ready');
     };
   }, []);
