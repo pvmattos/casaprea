@@ -44,8 +44,8 @@ export const AboutSection: React.FC = () => {
               data-reveal="p"
               className="mt-6 text-base md:text-lg leading-relaxed text-[#44403C] font-light"
             >
-              Implantada diretamente sobre a areia da Praia do Preá, a casa abraça um jardim
-              tropical interno e se abre por completo para a brisa e o horizonte do Atlântico.
+              Hospede-se na melhor localização da região e viva dias incríveis em um refúgio
+              exclusivo para você aproveitar ao lado de quem você gosta.
             </p>
             <p
               data-reveal="p"
