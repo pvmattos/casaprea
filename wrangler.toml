@@ -29,8 +29,8 @@ PROPERTY_TIMEZONE = "America/Fortaleza"
 # e substitua os IDs abaixo pelos IDs gerados na sua conta Cloudflare.
 [[kv_namespaces]]
 binding = "AVAILABILITY_KV"
-id = "REPLACE_WITH_PRODUCTION_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"
+id = "728bfed683d64b6eb6c169cc622ff66f"
+preview_id = "39b6ef68fb8b4151bd139b8ac9722212"
 
 # Segredos obrigatórios (NUNCA coloque valores reais neste arquivo):
 # Configure via CLI da Cloudflare:
